@@ -7,23 +7,36 @@ module.exports = function transform(arr) {
     doublePrev: `--double-prev`,
     doubleNext: `--double-next`,
   }
+
+  if (!Array.isArray(arr) || !arr) { throw new Error}
   let newArr = [];
-  if (!Array.isArray(arr)) { throw new Error }
+  
   for (let i = 0; i < arr.length; i++) {
     switch (arr[i]) {
-      case obj.deletePrev:
-        arr.splice(i - 1, 2);
-
-      case obj.deleteNext:
-        arr.splice(i, 2);
-
+      
       case obj.doubleNext:
-        arr.splice(i, 1, arr[i + 1]);
+      if(i  < arr.length - 1)  newArr.push(arr[i + 1]) 
+      break;
 
       case obj.doublePrev:
-        arr.splice(i, 1, arr[i - 1]);
+      if(i >= 1 && arr[i - 2] !== obj.deleteNext){
+        newArr.push(arr[i - 1]);
+      }
+      break;
 
+      case obj.deleteNext:
+      i++;
+      break;
+
+      case obj.deletePrev:
+      if(i >= 1 && arr[i - 2] !== obj.deleteNext){
+        newArr.splice(newArr.length - 1 , 1);
+      }
+      break;
+
+      default:
+      newArr.push(arr[i]);
     }
   }
-  return arr;
+  return newArr;
 };
